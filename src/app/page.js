@@ -1,65 +1,163 @@
-import Image from "next/image";
+"use client";
+import { useEffect } from "react";
+import "./globals.css"; // move your CSS there
+import Link from "next/link";
 
 export default function Home() {
+
+  useEffect(() => {
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    const move = (e) => {
+      mx = e.clientX;
+      my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    };
+
+    document.addEventListener('mousemove', move);
+
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px';
+        cursor.style.height = '20px';
+        ring.style.width = '50px';
+        ring.style.height = '50px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '12px';
+        cursor.style.height = '12px';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+      });
+    });
+
+    // Floating icons
+    const icons = ['📸','❤️','✨','🚀','📊','🔥','💡','⭐','🎯','👥','💬','📈'];
+    const container = document.getElementById('floatIcons');
+
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('div');
+      el.className = 'float-icon';
+      el.textContent = icons[Math.floor(Math.random() * icons.length)];
+      el.style.left = Math.random() * 100 + '%';
+      el.style.top = Math.random() * 100 + '%';
+      el.style.animationDuration = (10 + Math.random() * 20) + 's';
+      el.style.animationDelay = (-Math.random() * 20) + 's';
+      el.style.fontSize = (0.8 + Math.random() * 1.5) + 'rem';
+      container.appendChild(el);
+    }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    });
+
+    reveals.forEach(r => observer.observe(r));
+
+    return () => {
+      document.removeEventListener('mousemove', move);
+    };
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <div className="cursor" id="cursor"></div>
+      <div className="cursor-ring" id="cursorRing"></div>
+
+      {/* NAV */}
+      <nav>
+        <div className="logo">GrowthSpark</div>
+        <ul className="nav-links">
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+        <button className="nav-cta">Start Free Trial →</button>
+      </nav>
+
+      {/* HERO */}
+      <section className="hero">
+        <div className="orb orb-1"></div>
+        <div className="orb orb-2"></div>
+        <div className="orb orb-3"></div>
+        <div className="float-icons" id="floatIcons"></div>
+
+        <div className="badge">
+          <span className="badge-dot"></span>
+          AI-powered Instagram growth
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <h1>
+          Never run out of <br />
+          <em>growth ideas</em> again.
+        </h1>
+
+        <p>
+          GrowthSpark generates endless, strategy-backed Instagram content ideas
+          tailored to your niche.
+        </p>
+
+        <div className="hero-ctas">
+          <Link href="/ideaGenerator" className="btn-primary">✦ Generate Ideas Free</Link>
+          <a href="#how" className="btn-ghost">See how it works</a>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* STATS */}
+      <div className="stats">
+        <div className="stat">
+          <span className="stat-number">50K+</span>
+          <span className="stat-label">Businesses growing</span>
+        </div>
+        <div className="stat">
+          <span className="stat-number">2.4M</span>
+          <span className="stat-label">Ideas generated</span>
+        </div>
+        <div className="stat">
+          <span className="stat-number">340%</span>
+          <span className="stat-label">Avg. follower growth</span>
+        </div>
+        <div className="stat">
+          <span className="stat-number">4.9★</span>
+          <span className="stat-label">Average rating</span>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <section className="cta-section">
+        <h2>
+          Your audience is waiting. <br />
+          <em>Start growing today.</em>
+        </h2>
+        <p>Join thousands of businesses growing with AI.</p>
+        <a href="#" className="btn-primary">Start Free</a>
+      </section>
+
+      <footer>
+        <div className="footer-logo">GrowthSpark</div>
+        <div className="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Contact</a>
+        </div>
+        <div className="footer-copy">© 2025 GrowthSpark</div>
+      </footer>
+    </>
   );
 }
